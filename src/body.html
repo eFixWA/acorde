@@ -1,0 +1,225 @@
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><b>Acorde</b><span data-i18n="tagline">Play a chord. See its name.</span></div>
+    <button class="pill" id="midiBtn" type="button"><span class="led" id="midiLed"></span><span id="midiLabel" data-i18n="connect">Connect keyboard</span></button>
+    <div class="seg" role="group" aria-label="Language">
+      <button type="button" id="langEn" aria-pressed="true">EN</button>
+      <button type="button" id="langEs" aria-pressed="false">ES</button>
+    </div>
+    <button class="pill" id="fretToggle" type="button" aria-pressed="false"><span id="fretToggleLabel">Show guitar</span></button>
+    <button class="pill" id="presentBtn" type="button" data-i18n="present">Present</button>
+    <button class="pill" id="settingsBtn" type="button" data-i18n="settings">Settings</button>
+  </header>
+
+  <div class="notice" id="midiNotice" hidden></div>
+
+  <section class="stage">
+    <div class="card readout">
+      <div class="eyebrow"><span data-i18n="chord">Chord</span><span class="tag" id="stateTag" hidden></span><span class="mood" id="mood" hidden></span></div>
+      <div class="chordname" id="chordName"></div>
+      <div class="spoken" id="spoken"></div>
+      <div class="chips" id="altChips"></div>
+      <div class="tones" id="tones"></div>
+    </div>
+    <div class="card staffcard">
+      <div class="eyebrow"><span data-i18n="staff">Grand staff</span></div>
+      <svg id="staff" viewBox="0 0 520 300" role="img" aria-label="Grand staff"></svg>
+    </div>
+  </section>
+
+  <section class="card boards" id="fretSection" hidden>
+    <div class="boards-head">
+      <div class="eyebrow"><span data-i18n="fretboard">Fretboard</span></div>
+      <div class="seg" role="group" aria-label="Instrument">
+        <button type="button" id="instGuitar" aria-pressed="true" data-i18n="guitar">Guitar</button>
+        <button type="button" id="instBass" aria-pressed="false" data-i18n="bass">Bass</button>
+      </div>
+      <label class="mini" for="fretSkin"><span data-i18n="skinLbl">Look</span><select id="fretSkin">
+        <option value="acoustic" data-i18n="skinAcoustic">Acoustic (Taylor style)</option>
+        <option value="electric" data-i18n="skinElectric">Electric (Strat style)</option>
+        <option value="simple" data-i18n="skinSimple">Simple</option></select></label>
+      <div class="seg" role="group" aria-label="Dot labels">
+        <button type="button" id="dotNotes" aria-pressed="true" data-i18n="notes">Notes</button>
+        <button type="button" id="dotIntervals" aria-pressed="false" data-i18n="intervals">Intervals</button>
+      </div>
+    </div>
+    <div class="fretwrap"><svg id="fret" viewBox="0 0 1000 200" role="img" aria-label="Fretboard"></svg></div>
+    <div class="note" data-i18n="fretHint">Every place the chord tones fall in the first 15 frets. A ring marks the exact pitch you played.</div>
+  </section>
+
+  <section class="card pianocard">
+    <div class="stage-scroll" id="stageScroll" hidden><div class="stage3d" id="stage3d"></div></div>
+    <div class="piano-scroll" id="pianoScroll">
+      <div class="piano-body"><div class="keys" id="keys"></div></div>
+    </div>
+    <div class="piano-foot">
+      <span data-i18n="pianoHint">Click keys to play them, or use your computer keys</span>
+      <kbd>A W S E D F T G Y H U J K</kbd>
+      <span><kbd>Z</kbd> / <kbd>X</kbd> <span data-i18n="octave">octave</span> <b id="octLabel">4</b></span>
+
+      <button class="btn spacer" id="clearBtn" type="button" data-i18n="clear">Clear keys</button>
+    </div>
+  </section>
+
+  <section class="card lower">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="prog" data-i18n="progressions">Progressions</button>
+      <button type="button" role="tab" data-tab="lib" data-i18n="library">Chord library</button>
+      <button type="button" role="tab" data-tab="song" data-i18n="song">Analyze a song</button>
+      <button type="button" role="tab" data-tab="hist" data-i18n="history">Your chords</button>
+    </div>
+    <div class="panel" id="panelProg">
+      <div class="ctrl-row">
+        <div class="seg" role="group" id="progStyles" aria-label="Style">
+          <button type="button" data-style="classical" data-i18n="classical">Classical</button>
+          <button type="button" data-style="jazz" data-i18n="jazz">Jazz</button>
+          <button type="button" data-style="pop" data-i18n="pop">Pop</button>
+          <button type="button" data-style="salsa" data-i18n="salsa">Salsa</button>
+        </div>
+        <label class="mini" for="progKey"><span data-i18n="keyLbl">Key</span><select id="progKey"></select></label>
+        <label class="mini" for="bpm"><span data-i18n="tempo">Tempo</span><input type="range" id="bpm" min="50" max="180" step="2"><b id="bpmVal">90</b> BPM</label>
+        <label class="mini chk" for="loop"><input type="checkbox" id="loop"><span data-i18n="loop">Loop</span></label>
+      </div>
+      <p class="note" data-i18n="progHint">Click a chord to hear it, or play the whole progression.</p>
+      <div class="prog-grid" id="progGrid"></div>
+    </div>
+    <div class="panel" id="panelLib" hidden>
+      <div class="ctrl-row">
+        <div class="seg" role="group" id="libInsts" aria-label="Instrument">
+          <button type="button" data-inst="guitar" data-i18n="instGuitar">Guitar</button>
+          <button type="button" data-inst="ukulele" data-i18n="instUke">Ukulele</button>
+          <button type="button" data-inst="piano" data-i18n="instPiano">Piano</button>
+        </div>
+        <button class="btn spacer" id="libPdf" type="button" data-i18n="libPdf">Download PDF chord sheet</button>
+      </div>
+      <div class="lib-roots" id="libRoots"></div>
+      <div class="lib-body">
+        <div class="lib-types" id="libTypes"></div>
+        <div class="lib-detail" id="libDetail"></div>
+      </div>
+      <div class="lib-shapes" id="libShapes"></div>
+    </div>
+    <div class="panel" id="panelSong" hidden>
+      <label class="drop" id="songDrop" for="songFile">
+        <input type="file" id="songFile" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac">
+        <b data-i18n="songDropTitle">Drop a song here, or click to choose a file</b>
+        <span data-i18n="songDropSub">MP3, WAV, M4A, OGG or FLAC. The song stays on your computer.</span>
+      </label>
+      <div class="songstatus" id="songStatus" hidden><span id="songStatusText"></span><div class="pbar"><i id="songBar"></i></div></div>
+      <div class="songres" id="songResult" hidden>
+        <div class="songhead">
+          <div class="songinfo">
+            <h3 id="songTitle"></h3>
+            <div class="facts">
+              <span><small data-i18n="keyLbl">Key</small><b id="songKey"></b></span>
+              <span><small data-i18n="tempo">Tempo</small><b><span id="songBpm"></span> BPM</b></span>
+              <span><small data-i18n="songMeter">Time</small><b>4/4</b></span>
+              <span><small data-i18n="songLength">Length</small><b id="songLen"></b></span>
+              <span><small data-i18n="songTuning">Tuning</small><b id="songTune"></b></span>
+            </div>
+            <div class="transport">
+              <button class="btn" type="button" id="songBack">−5s</button>
+              <button class="btn primary" type="button" id="songPlay" data-i18n="play">Play</button>
+              <button class="btn" type="button" id="songFwd">+5s</button>
+              <input type="range" id="songSeek" min="0" max="1000" value="0" aria-label="Position">
+              <span class="stime" id="songTime">0:00</span>
+            </div>
+          </div>
+          <div class="nowbox">
+            <div class="nowtext">
+              <small data-i18n="songNowLbl">Now</small><div class="snow" id="songNow">–</div>
+              <small data-i18n="songNextLbl">Next</small><div class="snext" id="songNext"></div>
+              <div class="caponote" id="songCapoNote"></div>
+            </div>
+            <div class="sdiag" id="songDiagram"></div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label class="mini" for="songSpeed"><span data-i18n="songSpeedLbl">Speed</span><select id="songSpeed"><option value="0.5">50%</option><option value="0.75">75%</option><option value="0.9">90%</option><option value="1">100%</option><option value="1.1">110%</option><option value="1.25">125%</option></select></label>
+          <span class="mini"><span data-i18n="songTransLbl">Transpose</span><button class="btn sm" type="button" id="songTransDown" aria-label="Down">−</button><b id="songTransVal">0</b><button class="btn sm" type="button" id="songTransUp" aria-label="Up">+</button></span>
+          <span class="mini"><span data-i18n="songCapoLbl">Capo</span><button class="btn sm" type="button" id="songCapoDown" aria-label="Down">−</button><b id="songCapoVal">0</b><button class="btn sm" type="button" id="songCapoUp" aria-label="Up">+</button></span>
+          <button class="btn" type="button" id="songLoop" aria-pressed="false" disabled data-i18n="loop">Loop</button>
+          <button class="btn" type="button" id="songLoopClear" data-i18n="songClearLoop">Clear loop</button>
+          <label class="mini chk" for="songPiano"><input type="checkbox" id="songPiano"><span data-i18n="songPianoLbl">Show chords on the piano</span></label>
+          <label class="mini chk" for="songFollow"><input type="checkbox" id="songFollow"><span data-i18n="songFollowLbl">Follow along</span></label>
+          <button class="btn spacer" type="button" id="songPdf" data-i18n="songPdfLbl">Download chord sheet (PDF)</button>
+        </div>
+        <p class="note" id="songLoopInfo"></p>
+        <div class="songgrid" id="songGrid"></div>
+        <section class="lyr" aria-labelledby="lyrH">
+          <div class="lyr-head">
+            <h4 id="lyrH" data-i18n="lyrTitle">Lyrics</h4>
+            <input type="text" id="lyrArtist" aria-label="Artist" placeholder="Artist">
+            <input type="text" id="lyrTitle" aria-label="Song title" placeholder="Song title">
+            <button class="btn primary" type="button" id="lyrFind" data-i18n="lyrFindBtn">Find lyrics</button>
+            <a class="btn" id="lyrWeb" href="https://www.google.com/search?q=lyrics" target="_blank" rel="noopener noreferrer" data-i18n="lyrWebBtn">Search the web</a>
+            <span class="mini"><span data-i18n="lyrTimingLbl">Lyrics timing</span><button class="btn sm" type="button" id="lyrEarlier" aria-label="Earlier">−</button><b id="lyrOffsetVal">+0.0s</b><button class="btn sm" type="button" id="lyrLater" aria-label="Later">+</button></span>
+          </div>
+          <p class="lyr-status" id="lyrStatus" aria-live="polite"></p>
+          <div class="lyr-body">
+            <div class="lyr-view" id="lyrView" hidden></div>
+            <div class="lyr-edit">
+              <textarea id="lyrText" rows="10" spellcheck="false" aria-label="Lyrics"></textarea>
+              <div class="row">
+                <button class="btn" type="button" id="lyrApply" data-i18n="lyrApplyBtn">Use these lyrics</button>
+                <button class="btn" type="button" id="lyrTapStart" data-i18n="lyrTapStartBtn">Tap to sync</button>
+                <button class="btn primary" type="button" id="lyrTap" hidden data-i18n="lyrTapBtn">Tap: next line</button>
+              </div>
+            </div>
+          </div>
+          <p class="note" data-i18n="lyrNote">Lyrics come from LRCLIB, a free community lyrics database. Song lyrics are usually copyrighted: keep chord sheets with lyrics for your own practice.</p>
+        </section>
+        <p class="note" data-i18n="songNote">Chords are found automatically from the audio. Busy mixes, heavy drums or unusual chords can fool it, so check by ear.</p>
+      </div>
+    </div>
+    <div class="panel" id="panelHist" hidden>
+      <div class="boards-head">
+        <span class="note" data-i18n="histHint">Chords you play are listed here in order. Click one to hear it again.</span>
+        <button class="btn spacer" id="copyBtn" type="button" data-i18n="copy">Copy</button>
+        <button class="btn" id="histClear" type="button" data-i18n="clearHist">Clear</button>
+      </div>
+      <div class="history" id="history"></div>
+    </div>
+  </section>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="Settings">
+  <h2><span data-i18n="settings">Settings</span><button class="btn" id="closeSettings" type="button" data-i18n="done">Done</button></h2>
+  <div class="field"><span class="lbl" data-i18n="naming">Note names</span>
+    <div class="seg" role="group"><button type="button" id="nameLetters" aria-pressed="true">C D E</button><button type="button" id="nameSolfege" aria-pressed="false">Do Re Mi</button></div></div>
+  <div class="field"><span class="lbl" data-i18n="symbols">Chord symbols</span>
+    <div class="seg" role="group"><button type="button" id="symStd" aria-pressed="true">Cmaj7 · Cm7♭5</button><button type="button" id="symJazz" aria-pressed="false">CΔ7 · Cø7</button></div></div>
+  <div class="field"><label for="spelling" data-i18n="spelling">Spelling</label>
+    <select id="spelling"><option value="auto" data-i18n="auto">Automatic</option><option value="sharp" data-i18n="sharps">Prefer sharps</option><option value="flat" data-i18n="flats">Prefer flats</option></select></div>
+  <div class="field"><span class="lbl" data-i18n="key">Key for Roman numerals</span>
+    <div class="row2"><select id="keyRoot" aria-label="Key"></select><select id="keyMode" aria-label="Mode"><option value="maj" data-i18n="major">Major</option><option value="min" data-i18n="minor">Minor</option></select></div></div>
+  <div class="field"><label for="colorMode" data-i18n="keyColors">Key colors</label>
+    <select id="colorMode"><option value="hands" data-i18n="byHand">Left and right hand</option><option value="tones" data-i18n="byTone">Root and chord tones</option></select>
+    <div class="colors">
+      <label class="color" data-cmode="hands" for="colLeft"><input type="color" id="colLeft"><span data-i18n="leftHand">Left hand</span></label>
+      <label class="color" data-cmode="hands" for="colRight"><input type="color" id="colRight"><span data-i18n="rightHand">Right hand</span></label>
+      <label class="color" data-cmode="root" for="colRoot"><input type="color" id="colRoot"><span data-i18n="rootColor">Root</span></label>
+      <label class="color" data-cmode="tones" for="colTone"><input type="color" id="colTone"><span data-i18n="toneColor">Chord tones</span></label>
+    </div>
+    <label class="toggle" data-cmode="hands" for="markRoot"><span data-i18n="markRoot">Show the root in its own color</span><input type="checkbox" id="markRoot"></label>
+    <button class="btn" id="resetColors" type="button" data-i18n="resetColors">Reset colors</button>
+  </div>
+  <div class="field"><label for="keyLabels" data-i18n="keyLabels">Labels on piano keys</label>
+    <select id="keyLabels"><option value="name" data-i18n="notes">Notes</option><option value="interval" data-i18n="intervals">Intervals</option><option value="none" data-i18n="none">None</option></select></div>
+  <div class="field"><label for="split" data-i18n="split">Left/right hand split (also splits the staff)</label>
+    <select id="split"><option value="60">C4 (middle C)</option><option value="57">A3</option><option value="55">G3</option><option value="64">E4</option></select></div>
+  <label class="toggle"><span data-i18n="hold">Keep showing the last chord after release</span><input type="checkbox" id="hold" checked></label>
+  <label class="toggle"><span data-i18n="pedal">Count notes held by the sustain pedal</span><input type="checkbox" id="pedal" checked></label>
+  <label class="toggle"><span data-i18n="sound">Sound for on-screen keys</span><input type="checkbox" id="sound" checked></label>
+  <label class="toggle"><span data-i18n="midiSound">Sound for MIDI keyboard too</span><input type="checkbox" id="midiSound"></label>
+  <p class="note" data-i18n="settingsNote">Settings are saved in this browser.</p>
+</aside>
+
+<div class="present" id="present" hidden>
+  <button class="btn x" id="presentClose" type="button" data-i18n="exit">Exit</button>
+  <div>
+    <div class="chordname" id="pName"></div>
+    <div class="spoken" id="pSpoken"></div>
+  </div>
+</div>
